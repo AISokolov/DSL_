@@ -140,19 +140,19 @@ public class Parser {
         iterator++;
     }
 
-    public void IF(Token currentToken) throws ParseExc {
+    public void IF(Token currentToken) throws ParseExc{
         if (currentToken.type != "IF OPERATION")
-            throw new ParseExc(currentToken, "IF OPERATION");
+            throw new ParseExc(currentToken, "IF OPERATION",iterator);
     }
 
     public void var__(Token currentToken) throws ParseExc {
             if (currentToken.type != "VAR")
-                throw new ParseExc(currentToken, "VAR");
+                throw new ParseExc(currentToken, "VAR",iterator);
     }
     public void assign_op(Token currentToken) throws ParseExc {
              if (currentToken.type != "ASSIGNMENT OPERATOR")
              {
-                throw new ParseExc(currentToken, "ASSIGNMENT OPERATOR");
+                throw new ParseExc(currentToken, "ASSIGNMENT OPERATOR",iterator);
              }
     }
     public void expr_val(Token currentToken) throws ParseExc {
@@ -179,15 +179,15 @@ public class Parser {
     }
     public void digit__(Token currentToken) throws ParseExc{
         if (currentToken.type != "DIGIT")
-            throw new ParseExc(currentToken, "DIGIT");
+            throw new ParseExc(currentToken, "DIGIT", iterator);
     }
     public void OP_VALUE(Token currentToken) throws ParseExc{
         if (currentToken.type != "OPERATOR")
-            throw new ParseExc(currentToken, "OPERATOR");
+            throw new ParseExc(currentToken, "OPERATOR",iterator);
     }
     public void Func(Token currentToken) throws ParseExc{
         if (currentToken.type != "FUNCTION")
-            throw new ParseExc(currentToken, "FUNCTION");
+            throw new ParseExc(currentToken, "FUNCTION",iterator);
     }
     public void while_do(Token currentToken) throws ParseExc {
         WHILE(currentToken);
@@ -213,16 +213,15 @@ public class Parser {
     }
     public void LB(Token currentToken) throws ParseExc {
         if (currentToken.type != "L_BRACKET")
-            throw new ParseExc(currentToken, "L_BRACKET");
+            throw new ParseExc(currentToken, "L_BRACKET",iterator);
     }
     public void RB(Token currentToken) throws ParseExc{
         if (currentToken.type != "R_BRACKET")
-            throw new ParseExc(currentToken, "R_BRAACKET");
+            throw new ParseExc(currentToken, "R_BRAACKET",iterator);
     }
     public void condition(Token currentToken) throws ParseExc {
         try {
             var__(currentToken);
-            feature(currentToken);
         }
         catch (ParseExc ex){
             ex.getMsg(ex.token, ex.expected);
@@ -242,15 +241,15 @@ public class Parser {
     }
     public void COMPARISON_OP (Token currentToken) throws ParseExc{
         if (currentToken.type != "COMPARISON_OP")
-            throw new ParseExc(currentToken, "COMPARISON_OP");
+            throw new ParseExc(currentToken, "COMPARISON_OP",iterator);
     }
     public void WHILE(Token currentToken) throws ParseExc{
         if (currentToken.type != "WHILE")
-            throw new ParseExc(currentToken, "WHILE");
+            throw new ParseExc(currentToken, "WHILE",iterator);
     }
     public void ENDLINE(Token currentToken) throws ParseExc, IndexOutOfBoundsException{
         if (currentToken.type != "ENDLINE")
-            throw new ParseExc(currentToken, "ENDLINE");
+            throw new ParseExc(currentToken, "ENDLINE",iterator);
     }
     public void do_while(Token currentToken) throws ParseExc{
         DO(currentToken);
@@ -258,7 +257,7 @@ public class Parser {
     }
     public void DO(Token currentToken) throws ParseExc{
         if (currentToken.type != "DO_WHILE")
-            throw new ParseExc(currentToken, "DO");
+            throw new ParseExc(currentToken, "DO",iterator);
     }
     public void feature(Token currentToken) {
         if (currentToken.type == "feature") {
