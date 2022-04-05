@@ -1,13 +1,17 @@
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.regex.*;
 import java.util.*;
 public class Main {
 
-    public static void main(String[] args) throws ParseExc {
+    public static void main(String[] args) throws ParseExc, IOException {
         String[] exp = {
                 ".main() a = 5;",
                 "IF (a ~ 5) b = 7 * c;",
                 "DO a = 7 WHILE (a < 7);",
-                "WHILE (a < 10) b = a * 5 +c;"};
+                "WHILE (a < 10) b = a * 5 +c;"
+                ,};
         int len = exp.length;
         TokenType lex = new TokenType();
         LinkedList<Token> tokens = new LinkedList<Token>();

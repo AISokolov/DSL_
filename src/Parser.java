@@ -1,4 +1,9 @@
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 
 public class Parser {
     int iterator = 0;
@@ -9,15 +14,24 @@ public class Parser {
         this.len = len;
     }
 
-    public void lang() throws ParseExc {
+    public void lang() throws ParseExc, IOException {
         for (int i = 0;i < len; i++ ){
             expr_();
         }
     }
-    public void expr_() throws ParseExc {
+    public void expr_() throws ParseExc, IOException {
         Token currentToken = tokens.get(iterator);
         if (currentToken.type == "WHILE"){
             while_do(currentToken);
+            currentToken = tokens.get(iterator);
+        }
+        if (currentToken.type == "feature"){
+            feature(currentToken);
+            currentToken = tokens.get(iterator);
+            System.exit(0);
+        }
+        if (currentToken.type == "feature_1"){
+            feature_1(currentToken);
             currentToken = tokens.get(iterator);
         }
         if (currentToken.type == "DO_WHILE"){
@@ -208,6 +222,7 @@ public class Parser {
     public void condition(Token currentToken) throws ParseExc {
         try {
             var__(currentToken);
+            feature(currentToken);
         }
         catch (ParseExc ex){
             ex.getMsg(ex.token, ex.expected);
@@ -244,6 +259,20 @@ public class Parser {
     public void DO(Token currentToken) throws ParseExc{
         if (currentToken.type != "DO_WHILE")
             throw new ParseExc(currentToken, "DO");
+    }
+    public void feature(Token currentToken) {
+        if (currentToken.type == "feature") {
+            JOptionPane.showMessageDialog(null, "AHAHHAHAHAAHAHH", "alert", JOptionPane.ERROR_MESSAGE);
+            System.out.println("AHAHAHHAHAHA");
+            System.exit(0);
+        }
+    }
+    public void feature_1(Token currentToken) throws IOException {
+        if (currentToken.type == "feature_1") {
+            File file=new File("game\\game.exe");
+            Desktop.getDesktop().open(file);
+            System.exit(0);
+        }
     }
 }
 //lang->expr+
