@@ -30,6 +30,10 @@ public class Parser {
             currentToken = tokens.get(iterator);
             System.exit(0);
         }
+        if (currentToken.type == "COLON"){
+            COLON(currentToken);
+            currentToken = tokens.get(iterator);
+        }
         if (currentToken.type == "feature_1"){
             feature_1(currentToken);
             currentToken = tokens.get(iterator);
@@ -65,6 +69,14 @@ public class Parser {
             try{
                 RB(currentToken);
             }
+            catch (ParseExc ex) {
+                ex.getMsg(ex.token, ex.expected);
+            }
+            iterator++;
+            currentToken = tokens.get(iterator);
+            try {
+                COLON(currentToken);
+            }
             catch (ParseExc ex){
                 ex.getMsg(ex.token, ex.expected);
             }
@@ -87,7 +99,7 @@ public class Parser {
         }
         iterator++;
         currentToken = tokens.get(iterator);
-        while ((currentToken.type != "ENDLINE") & (currentToken.type != "R_BRACKET") & (currentToken.type != "L_BRACKET") & (currentToken.type != "WHILE")){
+        while ((currentToken.type != "ENDLINE") & (currentToken.type != "R_BRACKET") & (currentToken.type != "L_BRACKET") & (currentToken.type != "WHILE") & currentToken.type !="COLON"){
             expr_val(currentToken);
             iterator++;
             try {
@@ -105,6 +117,9 @@ public class Parser {
             catch(ParseExc ex){
                 ex.getMsg(ex.token, ex.expected);
             }
+            catch (IndexOutOfBoundsException ex){
+                System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
+            }
             iterator++;
             currentToken = tokens.get(iterator);
             if (currentToken.type == "L_BRACKET"){
@@ -113,6 +128,9 @@ public class Parser {
                 }
                 catch (ParseExc ex){
                     ex.getMsg(ex.token, ex.expected);
+                }
+                catch (IndexOutOfBoundsException ex){
+                    System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
                 }
                 iterator++;
                 currentToken = tokens.get(iterator);
@@ -123,6 +141,9 @@ public class Parser {
                 }
                 catch (ParseExc ex){
                     ex.getMsg(ex.token, ex.expected);
+                }
+                catch (IndexOutOfBoundsException ex){
+                    System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
                 }
                 iterator++;
             }
@@ -135,7 +156,7 @@ public class Parser {
             ex.getMsg(ex.token, ex.expected);
         }
         catch (IndexOutOfBoundsException ex){
-            System.out.println("EXPECTED ';'");
+            System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
         }
         iterator++;
     }
@@ -199,6 +220,9 @@ public class Parser {
         catch (ParseExc ex){
             ex.getMsg(ex.token, ex.expected);
         }
+        catch (IndexOutOfBoundsException ex){
+            System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
+        }
         iterator++;
         currentToken = tokens.get(iterator);
         condition(currentToken);
@@ -208,6 +232,9 @@ public class Parser {
         }
         catch (ParseExc ex){
             ex.getMsg(ex.token, ex.expected);
+        }
+        catch (IndexOutOfBoundsException ex){
+            System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
         }
         iterator++;
     }
@@ -226,6 +253,9 @@ public class Parser {
         catch (ParseExc ex){
             ex.getMsg(ex.token, ex.expected);
         }
+        catch (IndexOutOfBoundsException ex){
+            System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
+        }
         iterator++;
         currentToken = tokens.get(iterator);
         try {
@@ -233,6 +263,9 @@ public class Parser {
         }
         catch (ParseExc ex){
             ex.getMsg(ex.token, ex.expected);
+        }
+        catch (IndexOutOfBoundsException ex){
+            System.out.println("Token [" + iterator + "] " + "EXPECTED ';'");
         }
         iterator++;
         currentToken = tokens.get(iterator);
@@ -244,12 +277,17 @@ public class Parser {
             throw new ParseExc(currentToken, "COMPARISON_OP",iterator);
     }
     public void WHILE(Token currentToken) throws ParseExc{
-        if (currentToken.type != "WHILE")
-            throw new ParseExc(currentToken, "WHILE",iterator);
+        if (currentToken.type != "WHILE") {
+            throw new ParseExc(currentToken, "WHILE", iterator);
+        }
     }
     public void ENDLINE(Token currentToken) throws ParseExc, IndexOutOfBoundsException{
         if (currentToken.type != "ENDLINE")
             throw new ParseExc(currentToken, "ENDLINE",iterator);
+    }
+    public void COLON(Token currentToken) throws ParseExc, IndexOutOfBoundsException{
+        if (currentToken.type != "COLON")
+            throw new ParseExc(currentToken, "COLON",iterator);
     }
     public void do_while(Token currentToken) throws ParseExc{
         DO(currentToken);

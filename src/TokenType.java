@@ -15,6 +15,7 @@ public class TokenType {
         regexp.put("DIGIT", "^0|[1-9][0-9]*$");
         regexp.put("OPERATOR", "^[-|+|/|*|%]$");
         regexp.put("ASSIGNMENT OPERATOR", "^=$");
+        regexp.put("COLON", "\\:$");
         regexp.put("ENDLINE", "^\\;$");
         regexp.put("DO_WHILE", "^[D][O]$");
         regexp.put("feature", "^[L][O][L]$");

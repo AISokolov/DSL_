@@ -7,15 +7,17 @@ public class Main {
 
     public static void main(String[] args) throws ParseExc, IOException {
         String[] exp = {
+                "v = 2 + 1;",
                 ".main()  a = 5;",
-                "IF (a ~ 5) b = 7 * c;",
+                "IF (a ~ 5): b = 7 * c;",
                 "DO a = 7 WHILE (a < 7);",
-                "WHILE (a < 10) b = a * 5 + c;",
+                "WHILE (a < 10) a = 2;",
                 "a = 1;"};
         int len = exp.length;
         TokenType lex = new TokenType();
         LinkedList<Token> tokens = new LinkedList<Token>();
         String str_1 = "";
+        int counter = 0;
         for (int j = 0; j < exp.length;j++){
             for (int i = 0; i < exp[j].length(); i++) {
                 if (exp[j].toCharArray()[i] == ' ') {
@@ -38,7 +40,8 @@ public class Main {
             }
         }
         for (Token t : tokens) {
-            System.out.println("Type of Regular Exp.: "+ t.type + "; Token: " + t.token);
+            counter++;
+            System.out.println("Token [" + counter + "] "+"Type of Regular Exp.: "+ t.type + "; Token: " + t.token);
         }
         Parser par = new Parser(tokens, len);
         par.lang();
