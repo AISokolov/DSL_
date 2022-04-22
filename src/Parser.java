@@ -34,6 +34,10 @@ public class Parser {
             COLON(currentToken);
             currentToken = tokens.get(iterator);
         }
+        if (currentToken.type == "expression"){
+            exp(currentToken);
+            currentToken = tokens.get(iterator);
+        }
         if (currentToken.type == "feature_1"){
             feature_1(currentToken);
             currentToken = tokens.get(iterator);
@@ -310,6 +314,10 @@ public class Parser {
             Desktop.getDesktop().open(file);
             System.exit(0);
         }
+    }
+    public void exp(Token currentToken) throws ParseExc, IndexOutOfBoundsException{
+        if (currentToken.type != "expression")
+            throw new ParseExc(currentToken, "expression",iterator);
     }
 }
 //lang->expr+

@@ -7,12 +7,14 @@ public class Main {
 
     public static void main(String[] args) throws ParseExc, IOException {
         String[] exp = {
-                "v = 2 + 1;",
-                ".main()  a = 5;",
-                "IF (a ~ 5): b = 7 * c;",
-                "DO a = 7 WHILE (a < 7);",
-                "WHILE (a < 10) a = 2;",
-                "a = 1;"};
+//                "v = 1;",
+//                ".main()  a = 5;",
+//                "IF (a ~ 5): b = 7 * c;",
+//                "DO a = 7 WHILE (a < 7);",
+//                "WHILE (a < 10) a = 2;",
+//                "a = 1;"};
+        "a = 10 + 3;",
+        "b = 20 + 3;"};
         int len = exp.length;
         TokenType lex = new TokenType();
         LinkedList<Token> tokens = new LinkedList<Token>();
@@ -45,5 +47,7 @@ public class Main {
         }
         Parser par = new Parser(tokens, len);
         par.lang();
+        Interpreter in = new Interpreter(tokens, len);
+        in.scan();
     }
 }
