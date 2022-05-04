@@ -322,9 +322,9 @@ public class Parser {
 }
 //lang->expr+
 //expr->(if|while_do|do_while) (WHIlE LB condition RB)? ASSIGN_OP (expr_val)+ ENDLINE
-//if->IF LB condition RB
+//if->IF LB condition RB COLON
 //while_do-> WHILE LB condition RB
 //do_while->DO
-//condition-> VAR COMPARISON_OP (expr_val)+
+//condition-> VAR COMPARISON_OP expr_val
 //expr_val->value | OP_VALUE
 //value-> VAR | DIGIT
