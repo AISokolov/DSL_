@@ -2,14 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
 public class Parser {
     int iterator = 0;
-    public LinkedList<Token> tokens = new LinkedList<Token>();
+    public ArrayList<Token> tokens = new ArrayList<>();
     public int len;
-    Parser(LinkedList<Token> tokens, int len) {
+    Parser(ArrayList<Token> tokens, int len) {
         this.tokens = tokens;
         this.len = len;
     }

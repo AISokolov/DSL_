@@ -1,22 +1,26 @@
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.regex.*;
 import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws ParseExc, IOException {
         String[] exp = {
-                "v = 1;",
-                ".main()  a = 5;",
-                "IF (a ~ 5): b = 7 * c;",
-                "DO a = 7 WHILE (a < 7);",
-                "WHILE (a < 10) a = 2;",
-                "a = 1;"};
+//                "v = 1;",
+//                ".main()  a = 5;",
+//                "IF (a ~ 5): b = 7 * c;",
+//                "DO a = 7 WHILE (a < 7);",
+//                "WHILE (a < 10) a = 2;",
+//                "a = 1;",
+                "IF (a ~ 1): a = 2;"
+                };
         int len = exp.length;
         TokenType lex = new TokenType();
-        LinkedList<Token> tokens = new LinkedList<Token>();
+        ArrayList<Token> tokens = new ArrayList<>();
         String str = "";
+        String str_ = "";
         int counter = 0;
         for (int j = 0; j < exp.length;j++){
             for (int i = 0; i < exp[j].length(); i++) {
@@ -24,7 +28,6 @@ public class Main {
                     continue;
                 }
                 str += exp[j].toCharArray()[i];
-                String str_ = "";
                 if (i < exp[j].length() - 1) {
                     str_ = str + exp[j].toCharArray()[i + 1];
                 }
@@ -39,13 +42,13 @@ public class Main {
                 }
             }
         }
-        for (Token t : tokens) {
+        for (int k = 0; k < tokens.size(); k++) {
             counter++;
-            System.out.println("Token [" + counter + "] "+"Type of Regular Exp.: "+ t.type + "; Token: " + t.token);
+            System.out.println("Token [" + counter + "] "+"Type of Regular Exp.: "+ tokens.get(k).type + "; Token: " + tokens.get(k).token);
         }
         Parser par = new Parser(tokens, len);
         par.lang();
-        Interpreter in = new Interpreter(tokens, len);
-        in.scan();
+        Interpreter in = new Interpreter(tokens);
+        System.out.println(in.getVariables());
     }
 }

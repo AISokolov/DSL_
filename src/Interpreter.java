@@ -1,57 +1,131 @@
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-
+import java.util.Stack;
 
 public class Interpreter {
-    int iterator = 0;
-    public LinkedList<Token> tokens = new LinkedList<Token>();
-    public int len;
-    public Map<String,String > exp = new HashMap<>();
-    public Map<String,String > exp1 = new HashMap<>();
-    Interpreter(LinkedList<Token> tokens, int len) {
-        this.tokens = tokens;
-        this.len = len;
+
+    private ArrayList<Token> infixExpr;
+    private Map<String, Double> variables = new HashMap<>();
+
+    private int operationPriority(Token op) {
+        return switch (op.getToken()) {
+            case "(" -> 0;
+            case "+", "-" -> 1;
+            case "*", "/" -> 2;
+            default -> -1;
+        };
     }
-    public void scan() {
-        for (int i = 0;i < len; i++ ){
-            inter();
+
+    private double execute(Token op, double first, double second) {
+        return switch (op.getToken()) {
+            case "+" -> first + second;
+            case "-" -> first - second;
+            case "*" -> first * second;
+            case "/" -> first / second;
+            default -> -1;
+        };
+    }
+
+    public Interpreter(ArrayList<Token> infixExpr) {
+        this.infixExpr = infixExpr;
+        run();
+    }
+
+    private void run() {
+        int temp = 0;
+        int indexVar = 0;
+        for (int i = 0; i < infixExpr.size(); i++) {
+            if (infixExpr.get(i).getType() == "ASSIGNMENT OPERATOR") {
+                indexVar = i - 1;
+                temp = i + 1;
+            }
+            if (infixExpr.get(i).getType() == "ENDLINE") {
+                double rez = calc(toPostfix(infixExpr, temp, i));
+                variables.put(infixExpr.get(indexVar).getToken(), rez);
+            }
+            if (infixExpr.get(i).getType() == "IF OPERATION") {
+                indexVar = i + 3;
+                temp = i + 5;
+                System.out.println(indexVar);
+                System.out.println(temp);
+            }
         }
     }
-    public void inter() {
-        Token currentToken = tokens.get(iterator);
-            if (currentToken.type == "VAR") {
-                exp.put(currentToken.type, String.valueOf(currentToken.token));
-                currentToken = tokens.get(iterator);
-                iterator++;
+
+    private ArrayList<Token> toPostfix(ArrayList<Token> infixExpr, int start, int end) {
+        //	Выходная строка, содержащая постфиксную запись
+        ArrayList<Token> postfixExpr = new ArrayList<>();
+        //	Инициализация стека, содержащий операторы в виде символов
+        Stack<Token> stack = new Stack<>();
+
+        //	Перебираем строку
+        for (int i = start; i < end; i++) {
+            //	Текущий символ
+            Token c = infixExpr.get(i);
+
+            //	Если симовол - цифра
+            if (c.getType() == "DIGIT" || c.getType() == "VAR") {
+                postfixExpr.add(c);
+            } else if (c.getType() == "L_BRACKET") { //	Если открывающаяся скобка
+                //	Заносим её в стек
+                stack.push(c);
+            } else if (c.getType() == "R_BRACKET") {//	Если закрывающая скобка
+                //	Заносим в выходную строку из стека всё вплоть до открывающей скобки
+                while (stack.size() > 0 && stack.peek().getType() != "L_BRACKET")
+                    postfixExpr.add(stack.pop());
+                //	Удаляем открывающуюся скобку из стека
+                stack.pop();
+            } else if (c.getType() == "OPERATOR") { //	Проверяем, содержится ли символ в списке операторов
+                Token op = c;
+                //	Заносим в выходную строку все операторы из стека, имеющие более высокий приоритет
+                while (stack.size() > 0 && (operationPriority(stack.peek()) >= operationPriority(op)))
+                    postfixExpr.add(stack.pop());
+                //	Заносим в стек оператор
+                stack.push(c);
             }
-            if (currentToken.type == "ASSIGNMENT OPERATOR") {
-                currentToken = tokens.get(iterator);
-                System.out.println("gdf");
-            }
-            if (currentToken.type == "DIGIT") {
-                exp.put(currentToken.type, String.valueOf(currentToken.token));
-                currentToken = tokens.get(iterator);
-            }
-            if (currentToken.type == "OPERATOR") {
-                exp.put(currentToken.type, String.valueOf(currentToken.token));
-                String op = String.valueOf(currentToken.token);
-                if (op.equals("+")){
-                   plus();
-                }
-                currentToken = tokens.get(iterator);
-            }
-                iterator++;
-            if (currentToken.type == "DIGIT") {
-                exp.put(currentToken.type, String.valueOf(currentToken.token));
-                currentToken = tokens.get(iterator);
-            }
+        }
+        //	Заносим все оставшиеся операторы из стека в выходную строку
+        postfixExpr.addAll(stack);
+
+        //	Возвращаем выражение в постфиксной записи
+        return postfixExpr;
     }
-    public void plus(){
-        System.out.println(exp);
-        System.out.println("gdf");
+
+    private double calc(ArrayList<Token> postfixExpr) {
+        //	Стек для хранения чисел
+        Stack<Double> locals = new Stack<>();
+        //	Счётчик действий
+        int counter = 0;
+
+        //	Проходим по строке
+        for (int i = 0; i < postfixExpr.size(); i++) {
+            //	Текущий символ
+            Token c = postfixExpr.get(i);
+
+            //	Если символ число
+            if (c.getType() == "DIGIT") {
+                String number = c.getToken();
+                locals.push(Double.parseDouble(number));
+            } else if (c.getType() == "VAR") {
+                locals.push(variables.get(c.getToken()));
+            } else if (c.getType() == "OPERATOR") { //	Если символ есть в списке операторов
+                //	Прибавляем значение счётчику
+                counter += 1;
+
+                //	Получаем значения из стека в обратном порядке
+                double second = locals.size() > 0 ? locals.pop() : 0,
+                        first = locals.size() > 0 ? locals.pop() : 0;
+
+                //	Получаем результат операции и заносим в стек
+                locals.push(execute(c, first, second));
+            }
+        }
+        //	По завершению цикла возвращаем результат из стека
+        return locals.pop();
+    }
+
+    public Map<String, Double> getVariables() {
+        return variables;
     }
 }
